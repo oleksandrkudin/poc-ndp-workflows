@@ -1,0 +1,70 @@
+name: build
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: string
+        required: true
+      unit:
+        type: string
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      release_version: ${{ steps.output.outputs.release_version }}
+    steps:
+      - uses: actions/checkout@v4.1.1
+
+      - name: build
+        run: |
+          echo "Build component"
+      
+      - name: "Release: Get previous release version"
+        run: |
+          release_version=$(jq '.version' project.json)
+          echo "release_version=$release_version" | tee -a "$GITHUB_ENV"
+      
+      - name: "Release: Get next release versions"
+        id: semvers
+        uses: "WyriHaximus/github-action-next-semvers@v1.2.1"
+        with:
+          version: "${{ env.release_version }}"
+      
+      - name: "Release: Set next release version"
+        run: |
+          echo "release_version=${{ steps.semvers.outputs.patch }}"  |tee -a "$GITHUB_ENV"
+
+      - name: "Release: Update project version in repository"
+        run: |
+          jq '.version = "${{ env.release_version }}"' project.json | tee tmp.json && mv tmp.json project.json
+      
+      - name: "Release: Commit changes to repository"     
+        uses: stefanzweifel/git-auto-commit-action@v5.0.0
+        with:
+          commit_message: "[auto-commit] Set project version to ${{ env.release_version }}"
+          file_pattern: '**/project.json'
+
+      - name: remantic release
+        run: |
+          echo "Get release version"
+      
+      - name: package and push
+        run: |
+          echo "Package application and push to registry"
+      
+      - name: output
+        id: output
+        run: |
+          echo "release_version=${{ env.release_version }}" | tee -a "GITHUB_OUTPUT"
+
+  environment:
+    secrets: inherit
+    needs: [build]
+    uses: oleksandrkudin/poc-ndp-workflows/.github/workflows/update_environment.yaml@main
+    with:
+      unit: ${{ inputs.unit }}
+      environment: ${{ inputs.environment }}
+      release_version: ${{ needs.build.outputs.release_version }}

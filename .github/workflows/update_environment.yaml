@@ -1,0 +1,47 @@
+name: update_environment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: string
+        required: true
+      unit:
+        type: string
+        required: true
+      release_version:
+        type: string
+        required: true
+
+jobs:
+  environment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+        with:
+          repository: oleksandrkudin/poc-ndp-environments
+          token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+      
+      - name: "Update env: Update version"
+        working-directory: environments/${{ inputs.environment }}/${{ inputs.unit }} 
+        run: |
+          jq '.version = "${{ inputs.release_version }}"' config.json | tee tmp.json && mv tmp.json config.json
+      
+      - name: "Update env: Create PR"
+        id: pull_request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: '[Auto-update] Update ${{ inputs.unit }} unit to ${{ inputs.release_version }} version'
+          commit-message: '[Auto-update] Update ${{ inputs.unit }} unit to ${{ inputs.release_version }} version'
+          branch: ${{ github.repository }}/${{ github.run_id }}/${{ github.run_attempt }}
+          base: main
+          add-paths: '**/config.json'
+          # reviewers: '[]'
+          delete-branch: true
+          labels: 'automerge'
+    
+      - uses: reitermarkus/automerge@v2
+        with:
+          merge-method: squash
+          required-labels: automerge
+          pull-request: ${{ steps.pull_request.outputs.pull-request-number }}  

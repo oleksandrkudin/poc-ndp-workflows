@@ -1,0 +1,34 @@
+name: deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        type: string
+        required: true
+      unit:
+        type: string
+        required: true
+      environment:
+        type: string
+        required: true
+      next_environment:
+        type: string
+        required: false
+
+jobs:
+  deploy:
+    name: Deployment of ${{ inputs.unit }}, ${{ inputs.release_version }} to ${{ inputs.environment }} environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: deploy
+        run: |
+          echo "Deploy component"
+
+  environment:
+    if: ${{ inputs.next_environment != '' }}
+    uses: oleksandrkudin/poc-ndp-workflows/.github/workflows/update_environment.yaml@main
+    with:
+      unit: ${{ inputs.unit }}
+      environment: ${{ inputs.next_environment }}
+      release_version: ${{ needs.build.outputs.release_version }}
