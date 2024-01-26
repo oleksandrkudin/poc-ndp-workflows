@@ -45,7 +45,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5.0.0
         with:
           commit_message: "[auto-commit] Set project version to ${{ env.release_version }}"
-          file_pattern: '**/project.json'
+          file_pattern: 'project.json'
 
       - name: remantic release
         run: |
