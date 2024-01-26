@@ -58,7 +58,7 @@ jobs:
       - name: output
         id: output
         run: |
-          echo "release_version=${{ env.release_version }}" | tee -a "GITHUB_OUTPUT"
+          echo "release_version=${{ env.release_version }}" | tee -a "$GITHUB_OUTPUT"
 
   environment:
     secrets: inherit
