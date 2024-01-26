@@ -13,6 +13,8 @@ on:
         type: string
         required: true
 
+# TODO: This must part of remote repository.
+
 jobs:
   environment:
     runs-on: ubuntu-latest
@@ -39,6 +41,7 @@ jobs:
           # reviewers: '[]'
           delete-branch: true
           labels: 'automerge'
+          token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
     
       - uses: reitermarkus/automerge@v2
         with:
