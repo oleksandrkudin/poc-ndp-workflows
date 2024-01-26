@@ -47,5 +47,6 @@ jobs:
         with:
           merge-method: squash
           required-labels: automerge
-          pull-request: ${{ steps.pull_request.outputs.pull-request-number }}  
+          # pull-request: ${{ steps.pull_request.outputs.pull-request-number }}
+          pull-request: ${{ steps.pull_request.outputs.pull-request-url }}  
           token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
