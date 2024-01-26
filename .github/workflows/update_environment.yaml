@@ -43,10 +43,11 @@ jobs:
           labels: 'automerge'
           token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
     
+      # TODO: Private free repository does not allow auto-merge.
       - uses: reitermarkus/automerge@v2
         with:
           merge-method: squash
           required-labels: automerge
-          # pull-request: ${{ steps.pull_request.outputs.pull-request-number }}
-          pull-request: ${{ steps.pull_request.outputs.pull-request-url }}  
+          pull-request: ${{ steps.pull_request.outputs.pull-request-number }}
+          # pull-request: ${{ steps.pull_request.outputs.pull-request-url }}  
           token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
