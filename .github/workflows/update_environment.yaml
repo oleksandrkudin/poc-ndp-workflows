@@ -14,7 +14,7 @@ on:
         required: true
 
 # TODO: This must part of remote repository.
-
+# TODO: Better management for PERSONAL_GITHUB_TOKEN
 jobs:
   environment:
     runs-on: ubuntu-latest
@@ -48,3 +48,4 @@ jobs:
           merge-method: squash
           required-labels: automerge
           pull-request: ${{ steps.pull_request.outputs.pull-request-number }}  
+          token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
