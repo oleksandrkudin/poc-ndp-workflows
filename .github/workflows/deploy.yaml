@@ -27,6 +27,7 @@ jobs:
 
   environment:
     if: ${{ inputs.next_environment != '' }}
+    secrets: inherit
     uses: oleksandrkudin/poc-ndp-workflows/.github/workflows/update_environment.yaml@main
     with:
       unit: ${{ inputs.unit }}
