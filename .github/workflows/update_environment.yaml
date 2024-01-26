@@ -59,3 +59,4 @@ jobs:
           github-token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
           number:  ${{ steps.pull_request.outputs.pull-request-number }}
           method: squash
+          repo: oleksandrkudin/poc-ndp-environments
