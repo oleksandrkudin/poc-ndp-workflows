@@ -43,11 +43,19 @@ jobs:
           labels: 'automerge'
           token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
     
-      # TODO: Private free repository does not allow auto-merge.
-      - uses: reitermarkus/automerge@v2
+      # TODO: Private free repository does not allow auto-merge. Auto-merge should be enabled for repository.
+      # TODO: Auto-merge has many prerequisites    
+      # - uses: reitermarkus/automerge@v2
+      #   with:
+      #     merge-method: squash
+      #     required-labels: automerge
+      #     pull-request: ${{ steps.pull_request.outputs.pull-request-number }}
+      #     # pull-request: ${{ steps.pull_request.outputs.pull-request-url }}  
+      #     token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+
+      - name: "Update env: Merge PR"
+        uses: juliangruber/merge-pull-request-action@v1
         with:
-          merge-method: squash
-          required-labels: automerge
-          pull-request: ${{ steps.pull_request.outputs.pull-request-number }}
-          # pull-request: ${{ steps.pull_request.outputs.pull-request-url }}  
-          token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          number:  ${{ steps.pull_request.outputs.pull-request-number }}
+          method: squash
