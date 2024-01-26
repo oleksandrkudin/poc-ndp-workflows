@@ -24,7 +24,7 @@ jobs:
       
       - name: "Release: Get previous release version"
         run: |
-          release_version=$(jq '.version' project.json)
+          release_version=$(jq --raw-output '.version' project.json)
           echo "release_version=$release_version" | tee -a "$GITHUB_ENV"
       
       - name: "Release: Get next release versions"
