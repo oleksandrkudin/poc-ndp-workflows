@@ -32,4 +32,4 @@ jobs:
     with:
       unit: ${{ inputs.unit }}
       environment: ${{ inputs.next_environment }}
-      release_version: ${{ needs.build.outputs.release_version }}
+      release_version: ${{ inputs.release_version }}
