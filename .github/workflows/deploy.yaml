@@ -20,6 +20,7 @@ jobs:
   deploy:
     name: Deployment of ${{ inputs.unit }}, ${{ inputs.release_version }} to ${{ inputs.environment }} environment
     runs-on: ubuntu-latest
+    environment: ${{ inputs.next_environment }}
     steps:
       - name: deploy
         run: |
