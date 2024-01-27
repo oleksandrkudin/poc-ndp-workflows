@@ -40,8 +40,8 @@ jobs:
         id: pull_request
         uses: peter-evans/create-pull-request@v5
         with:
-          title: '[Auto-update] ${{ inputs.unit }} ${{ env.deployed_release_version }} -> ${{ inputs.release_version }} in ${{ inputs.environment }}'
-          commit-message: '[Auto-update] ${{ inputs.unit }}  ${{ env.deployed_release_version }} -> ${{ inputs.release_version }} in ${{ inputs.environment }}'
+          title: '[auto] ${{ inputs.environment }} :: ${{ inputs.unit }} ${{ env.deployed_release_version }} -> ${{ inputs.release_version }}'
+          commit-message: '[auto] ${{ inputs.environment }} :: ${{ inputs.unit }} ${{ env.deployed_release_version }} -> ${{ inputs.release_version }}'
           branch: ${{ github.repository }}/${{ github.run_id }}/${{ github.run_attempt }}
           base: main
           add-paths: '**/deploy-config.json'
