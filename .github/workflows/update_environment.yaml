@@ -35,6 +35,16 @@ jobs:
         working-directory: environments/${{ inputs.environment }}/${{ inputs.unit }} 
         run: |
           jq '.version = "${{ inputs.release_version }}"' deploy-config.json | tee tmp.json && mv tmp.json deploy-config.json
+
+      - name: "Update env: Update version in nested units"
+        run: |
+          for version_update in $(jq --raw-output --compact-output --arg unit "${{ inputs.unit }}" '.[$unit] // [] | .[]' nested_version_updates.json); do 
+            nested_unit=$(echo $version_update | jq --raw-output 'keys[0]')
+            version_field=$(echo $version_update | jq --raw-output --arg nested_unit "$nested_unit"  '.[$nested_unit]')
+            echo "Update $version_field in $nested_unit"
+            nested_unit_config="environments/${{ inputs.environment }}/$nested_unit/deploy-config.json"
+            jq --arg version_field "$version_field" '.[$version_field] = "${{ inputs.release_version }}"' $nested_unit_config | tee tmp.json && mv tmp.json $nested_unit_config
+          done
       
       - name: "Update env: Create PR"
         id: pull_request
