@@ -27,13 +27,13 @@ jobs:
       - name: "Update env: Get deployed version"
         working-directory: environments/${{ inputs.environment }}/${{ inputs.unit }} 
         run: |
-          deployed_release_version=$(jq --raw-output '.version' config.json)
+          deployed_release_version=$(jq --raw-output '.version' deploy-config.json)
           echo "deployed_release_version=$deployed_release_version" | tee -a "$GITHUB_ENV"
     
       - name: "Update env: Update version"
         working-directory: environments/${{ inputs.environment }}/${{ inputs.unit }} 
         run: |
-          jq '.version = "${{ inputs.release_version }}"' config.json | tee tmp.json && mv tmp.json config.json
+          jq '.version = "${{ inputs.release_version }}"' deploy-config.json | tee tmp.json && mv tmp.json deploy-config.json
       
       - name: "Update env: Create PR"
         id: pull_request
@@ -43,7 +43,7 @@ jobs:
           commit-message: '[Auto-update] ${{ inputs.unit }}  ${{ env.deployed_release_version }} -> ${{ inputs.release_version }} in ${{ inputs.environment }}'
           branch: ${{ github.repository }}/${{ github.run_id }}/${{ github.run_attempt }}
           base: main
-          add-paths: '**/config.json'
+          add-paths: '**/deploy-config.json'
           # reviewers: '[]'
           delete-branch: true
           labels: 'automerge'
@@ -67,3 +67,8 @@ jobs:
           number:  ${{ steps.pull_request.outputs.pull-request-number }}
           method: squash
           repo: oleksandrkudin/poc-ndp-environments
+      
+      - name: "Update env: Delete branch after merge"
+        if: ${{ steps.pull_request.outputs.pull-request-number != '' }}
+        run: |
+          git push origin --delete ${{ github.repository }}/${{ github.run_id }}/${{ github.run_attempt }}
