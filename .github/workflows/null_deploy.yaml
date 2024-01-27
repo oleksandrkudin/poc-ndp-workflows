@@ -1,0 +1,27 @@
+name: null_deploy
+
+on:
+  workflow_call:
+    inputs:
+      release_version:
+        type: string
+        required: true
+      unit:
+        type: string
+        required: true
+      environment:
+        type: string
+        required: true
+      next_environment:
+        type: string
+        required: false
+
+jobs:
+  environment:
+    if: ${{ inputs.next_environment != '' }}
+    secrets: inherit
+    uses: oleksandrkudin/poc-ndp-workflows/.github/workflows/update_environment.yaml@main
+    with:
+      unit: ${{ inputs.unit }}
+      environment: ${{ inputs.next_environment }}
+      release_version: ${{ inputs.release_version }}
