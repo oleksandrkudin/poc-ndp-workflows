@@ -15,8 +15,23 @@ on:
       next_environment:
         type: string
         required: false
+      deployment_statuses:
+        type: string
+        required: true
 
 jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: deploy
+        run: |
+          if [[ "$(echo '${{ inputs.deployment_statuses }}' |  jq --compact-output 'unique')" == '["success"]' ]]; then
+            exit 0
+          else
+            exit 1
+          fi
+
   environment:
     if: ${{ inputs.next_environment != '' }}
     secrets: inherit
