@@ -17,6 +17,7 @@ on:
 # TODO: Better management for PERSONAL_GITHUB_TOKEN
 jobs:
   environment:
+    name: Promote change to ${{ inputs.environment }} environment
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.1

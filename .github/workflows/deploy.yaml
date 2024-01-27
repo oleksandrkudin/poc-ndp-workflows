@@ -20,7 +20,7 @@ jobs:
   deploy:
     name: Deployment of ${{ inputs.unit }}, ${{ inputs.release_version }} to ${{ inputs.environment }} environment
     runs-on: ubuntu-latest
-    environment: ${{ inputs.next_environment }}
+    environment: ${{ inputs.environment }}
     steps:
       - name: deploy
         run: |
@@ -28,6 +28,7 @@ jobs:
 
   environment:
     if: ${{ inputs.next_environment != '' }}
+    needs: [deploy]
     secrets: inherit
     uses: oleksandrkudin/poc-ndp-workflows/.github/workflows/update_environment.yaml@main
     with:
