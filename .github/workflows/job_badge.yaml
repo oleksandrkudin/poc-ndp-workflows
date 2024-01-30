@@ -62,7 +62,7 @@ jobs:
           color: ${{ env.badge_color }}
           path: ${{ inputs.badge_directory }}/${{ inputs.unit }}-${{ inputs.environment }}.svg
       
-      - uses: oleksandrkudin/poc-ndp-workflows/.github/workflows/commit_changes_pr.yaml@main
+      - uses: oleksandrkudin/poc-ndp-workflows/.github/actions/commit_changes_pr@main
         with:
           title: '[${{ inputs.pr_auto_prefix }}] ${{ inputs.environment }} :: ${{ inputs.unit }} ${{ inputs.badge_label }} - ${{ env.deploy_job_status }}'
           add-paths: '${{ inputs.badge_directory }}/**'

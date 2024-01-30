@@ -46,7 +46,7 @@ jobs:
             jq --arg version_field "$version_field" '.[$version_field] = "${{ inputs.release_version }}"' $nested_unit_config | tee tmp.json && mv tmp.json $nested_unit_config
           done
       
-      - uses: oleksandrkudin/poc-ndp-workflows/.github/workflows/commit_changes_pr.yaml@main
+      - uses: oleksandrkudin/poc-ndp-workflows/.github/actions/commit_changes_pr@main
         with:
           title: '[auto-deploy] ${{ inputs.environment }} :: ${{ inputs.unit }} ${{ env.deployed_release_version }} -> ${{ inputs.release_version }}'
           add-paths: '**/deploy-config.json'
