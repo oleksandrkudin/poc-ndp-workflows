@@ -1,5 +1,4 @@
 name: commit_changes_pr
-run-name: Merge changes via PR
 
 on:
   workflow_call:
@@ -16,7 +15,7 @@ on:
 
 jobs:
   commit_changes_pr:
-    name: Commit changes via PR
+    name: Merge changes via PR
     runs-on: ubuntu-latest
     steps:
       - name: "Move changes to branch and create PR"

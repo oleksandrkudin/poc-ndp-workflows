@@ -1,0 +1,65 @@
+name: job_badge
+
+on:
+  workflow_call:
+    inputs:
+      job_result:
+        type: string
+        required: true
+      badge_directory:
+        type: string
+        required: true
+      badge_label:
+        type: string
+        required: true
+      unit:
+        type: string
+        required: true
+      environment:
+        type: string
+        required: true
+
+jobs:
+  job_badge:
+    name: Create badge based on job status
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+
+      - name: Set deploy jobs status and color
+        run: |
+          deploy_job_status='${{ inputs.job_result }}'
+          if [ "$deploy_job_status" == "" ]; then
+            deploy_job_status="unknow"
+          fi
+          echo "deploy_job_status=$deploy_job_status" | tee -a "$GITHUB_ENV"
+
+          if [ "$deploy_job_status" == "success" ]; then
+            badge_color="green"
+          elif [ "$deploy_job_status" == "failure" ]; then
+            badge_color="red"
+          else
+            badge_color="grey"
+          fi
+          echo "badge_color=$badge_color" | tee -a "$GITHUB_ENV"
+      
+      - name: Create badges directory
+        run: |
+          if [ ! -d ${{ inputs.badge_directory }} ]; then
+            mkdir -p ${{ inputs.badge_directory }}
+          fi
+
+      # TODO: recommendation dedicated branch with special settings as repository can grow very large 
+      - name: Generate the status badge SVG image
+        uses: emibcn/badge-action@v2.0.2
+        id: badge
+        with:
+          label: '${{ inputs.badge_label }}'
+          status: '${{ env.deploy_job_status }}'
+          color: ${{ env.badge_color }}
+          path: ${{ inputs.badge_directory }}/${{ inputs.unit }}-${{ inputs.environment }}.svg
+      
+      - uses: oleksandrkudin/poc-ndp-workflows/.github/workflows/commit_changes_pr.yaml@main
+        with:
+          title: '[auto-badge] ${{ inputs.environment }} :: ${{ inputs.unit }} ${{ inputs.badge_label }} - ${{ env.deploy_job_status }}'
+          add-paths: '${{ inputs.badge_directory }}/**'
