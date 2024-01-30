@@ -1,6 +1,9 @@
 name: commit_changes_pr
 
 inputs:
+  token:
+    type: string
+    required: true
   title:
     type: string
     required: true
@@ -32,13 +35,13 @@ runs:
           reviewers: '${{ inputs.reviewers }}'
           #delete-branch: true # Look like it does not work
           #labels: '${{ inputs.labels }}'
-          token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+          token: ${{ inputs.token }}
       
       - name: "Merge PR"
         if: ${{ steps.pull_request.outputs.pull-request-number != '' }}
         shell: bash
         env:
-          GH_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+          GH_TOKEN: ${{ inputs.token }}
         run: |
           gh pr merge ${{ steps.pull_request.outputs.pull-request-number }} --squash --delete-branch --auto
     
