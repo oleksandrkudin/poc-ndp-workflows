@@ -21,7 +21,7 @@ runs:
         shell: bash
         run: |
           title_md5_sum=$(echo "${{ inputs.title }}" | md5sum | cut -d ' ' -f1)
-          echo "branch_name=${{ github.repository }}/${{ github.run_id }}/${{ github.run_attempt }}/$title_md5_sum" | tee -a "$GITHUB_OUTPUT"
+          echo "branch_name=${{ github.repository }}/${{ github.run_id }}/${{ github.run_attempt }}/$title_md5_sum" | tee -a "$GITHUB_ENV"
 
       - name: "Move changes to branch and create PR"
         id: pull_request
