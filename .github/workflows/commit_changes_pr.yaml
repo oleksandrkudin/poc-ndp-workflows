@@ -18,13 +18,18 @@ jobs:
     name: Merge changes via PR
     runs-on: ubuntu-latest
     steps:
+      - name: Set unique branch
+        run: |
+          title_md5_sum=$(echo "${{ inputs.title }}" | md5sum | cut -d ' ' -f1)
+          echo "branch_name=${{ github.repository }}/${{ github.run_id }}/${{ github.run_attempt }}/$title_md5_sum" | tee -a "$GITHUB_OUTPUT"
+
       - name: "Move changes to branch and create PR"
         id: pull_request
         uses: peter-evans/create-pull-request@v5
         with:
           title: ${{ inputs.title }}
           commit-message: ${{ inputs.title }}
-          branch: ${{ github.repository }}/${{ github.run_id }}/${{ github.run_attempt }}
+          branch: ${{ env.branch_name }}
           base: main
           add-paths: ${{ inputs.add-paths }}
           reviewers: '${{ inputs.reviewers }}'
