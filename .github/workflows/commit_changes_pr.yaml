@@ -1,0 +1,65 @@
+name: commit_changes_pr
+run-name: Merge changes via PR
+
+on:
+  workflow_call:
+    inputs:
+      title:
+        type: string
+        required: true
+      add-paths:
+        type: string
+        required: true
+      reviewers:
+        type: string
+        default: '[]'
+
+jobs:
+  commit_changes_pr:
+    name: Commit changes via PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Move changes to branch and create PR"
+        id: pull_request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: ${{ inputs.title }}
+          commit-message: ${{ inputs.title }}
+          branch: ${{ github.repository }}/${{ github.run_id }}/${{ github.run_attempt }}
+          base: main
+          add-paths: ${{ inputs.add-paths }}
+          reviewers: '${{ inputs.reviewers }}'
+          #delete-branch: true # Look like it does not work
+          #labels: '${{ inputs.labels }}'
+          token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+      
+      - name: "Merge PR"
+        if: ${{ steps.pull_request.outputs.pull-request-number != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        run: |
+          gh pr merge ${{ steps.pull_request.outputs.pull-request-number }} --squash --delete-branch --auto
+    
+      # TODO: Private free repository does not allow auto-merge. Auto-merge should be enabled for repository.
+      # TODO: Auto-merge has many prerequisites    
+      # - uses: reitermarkus/automerge@v2
+      #   with:
+      #     merge-method: squash
+      #     required-labels: automerge
+      #     pull-request: ${{ steps.pull_request.outputs.pull-request-number }}
+      #     # pull-request: ${{ steps.pull_request.outputs.pull-request-url }}  
+      #     token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+
+      # - name: "Merge PR"
+      #   if: ${{ steps.pull_request.outputs.pull-request-number != '' }}
+      #   uses: juliangruber/merge-pull-request-action@v1
+      #   with:
+      #     github-token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+      #     number:  ${{ steps.pull_request.outputs.pull-request-number }}
+      #     method: squash
+      #     repo: oleksandrkudin/poc-ndp-environments
+      
+      # - name: "Delete branch"
+      #   if: ${{ steps.pull_request.outputs.pull-request-number != '' }}
+      #   run: |
+      #     git push origin --delete ${{ github.repository }}/${{ github.run_id }}/${{ github.run_attempt }}
