@@ -18,6 +18,9 @@ on:
       environment:
         type: string
         required: true
+      pr_auto_prefix:
+        type: string
+        required: true
 
 jobs:
   job_badge:
@@ -61,5 +64,5 @@ jobs:
       
       - uses: oleksandrkudin/poc-ndp-workflows/.github/workflows/commit_changes_pr.yaml@main
         with:
-          title: '[auto-badge] ${{ inputs.environment }} :: ${{ inputs.unit }} ${{ inputs.badge_label }} - ${{ env.deploy_job_status }}'
+          title: '[${{ inputs.pr_auto_prefix }}] ${{ inputs.environment }} :: ${{ inputs.unit }} ${{ inputs.badge_label }} - ${{ env.deploy_job_status }}'
           add-paths: '${{ inputs.badge_directory }}/**'

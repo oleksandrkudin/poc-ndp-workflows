@@ -12,9 +12,9 @@ on:
       environment:
         type: string
         required: true
-      next_environment:
-        type: string
-        required: false
+      # next_environment:
+      #   type: string
+      #   required: false
 
 jobs:
   deploy:
@@ -25,12 +25,12 @@ jobs:
         run: |
           echo "Deploy component"
 
-  environment:
-    if: ${{ inputs.next_environment != '' }}
-    needs: [deploy]
-    secrets: inherit
-    uses: oleksandrkudin/poc-ndp-workflows/.github/workflows/update_environment.yaml@main
-    with:
-      unit: ${{ inputs.unit }}
-      environment: ${{ inputs.next_environment }}
-      release_version: ${{ inputs.release_version }}
+  # environment:
+  #   if: ${{ inputs.next_environment != '' }}
+  #   needs: [deploy]
+  #   secrets: inherit
+  #   uses: oleksandrkudin/poc-ndp-workflows/.github/workflows/update_environment.yaml@main
+  #   with:
+  #     unit: ${{ inputs.unit }}
+  #     environment: ${{ inputs.next_environment }}
+  #     release_version: ${{ inputs.release_version }}
