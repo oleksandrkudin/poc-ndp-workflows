@@ -43,7 +43,7 @@ runs:
         env:
           GH_TOKEN: ${{ inputs.token }}
         run: |
-          gh pr merge ${{ steps.pull_request.outputs.pull-request-number }} --squash --delete-branch --auto
+          gh pr merge ${{ steps.pull_request.outputs.pull-request-number }} --squash --auto
     
       # TODO: Private free repository does not allow auto-merge. Auto-merge should be enabled for repository.
       # TODO: Auto-merge has many prerequisites    
