@@ -49,7 +49,7 @@ runs:
             mergeable=$(gh pr view ${{ steps.pull_request.outputs.pull-request-number }} --json mergeable | jq --raw-output '.mergeable')
             echo "$mergeable"
             if [ "$mergeable" == "MERGEABLE" ]; then
-              gh pr merge ${{ steps.pull_request.outputs.pull-request-number }} --squash --auto
+              gh pr merge ${{ steps.pull_request.outputs.pull-request-number }} --squash --auto --delete-branch
               break
             fi
             current_time=$(date +%s)
