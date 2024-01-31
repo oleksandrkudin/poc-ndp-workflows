@@ -43,7 +43,24 @@ runs:
         env:
           GH_TOKEN: ${{ inputs.token }}
         run: |
-          gh pr merge ${{ steps.pull_request.outputs.pull-request-number }} --squash --auto
+          start_time=$(date +%s)
+          while true; do
+            echo -n "Checking if PR is mergeable ... "
+            mergeable=$(gh pr view ${{ steps.pull_request.outputs.pull-request-number }} --json mergeable | jq --raw-output '.mergeable')
+            echo "$mergeable"
+            if [ "$mergeable" == "MERGEABLE" ]; then
+              gh pr merge ${{ steps.pull_request.outputs.pull-request-number }} --squash --auto
+              break
+            fi
+            current_time=$(date +%s)
+            if [ $((current_time - start_time)) -gt 300 ]; then
+              echo "Pull request is not mergeable."
+              exit 1
+            fi
+            sleep 5
+          done
+
+          
     
       # TODO: Private free repository does not allow auto-merge. Auto-merge should be enabled for repository.
       # TODO: Auto-merge has many prerequisites    
