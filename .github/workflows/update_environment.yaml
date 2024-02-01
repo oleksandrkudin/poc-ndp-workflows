@@ -49,5 +49,6 @@ jobs:
       - uses: oleksandrkudin/poc-ndp-workflows/.github/actions/commit_changes_pr@main
         with:
           token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+          base_branch: main
           title: '[auto-deploy] ${{ inputs.environment }} :: ${{ inputs.unit }} ${{ env.deployed_release_version }} -> ${{ inputs.release_version }}'
           add-paths: '**/deploy-config.json'

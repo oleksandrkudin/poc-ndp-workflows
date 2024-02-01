@@ -13,6 +13,9 @@ inputs:
   reviewers:
     type: string
     default: '[]'
+  base_branch:
+    type: string
+    required: true
 
 runs:
   using: "composite"
@@ -30,7 +33,7 @@ runs:
           title: ${{ inputs.title }}
           commit-message: ${{ inputs.title }}
           branch: ${{ env.branch_name }}
-          base: main
+          base: ${{ inputs.base_branch }}
           add-paths: ${{ inputs.add-paths }}
           reviewers: '${{ inputs.reviewers }}'
           #delete-branch: true # Look like it does not work

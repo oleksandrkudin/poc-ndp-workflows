@@ -22,12 +22,17 @@ on:
         type: string
         required: true
 
+env:
+  badge_branch: badges
+
 jobs:
   job_badge:
     name: Create badge based on job status
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.1
+        with:
+          ref: ${{ env.badge_branch }}
 
       - name: Set deploy jobs status and color
         run: |
@@ -65,5 +70,6 @@ jobs:
       - uses: oleksandrkudin/poc-ndp-workflows/.github/actions/commit_changes_pr@main
         with:
           token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+          base_branch: ${{ env.badge_branch }}
           title: '[${{ inputs.pr_auto_prefix }}] ${{ inputs.environment }} :: ${{ inputs.unit }} ${{ inputs.badge_label }} - ${{ env.deploy_job_status }}'
           add-paths: '${{ inputs.badge_directory }}/**'
